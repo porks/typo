@@ -31,6 +31,15 @@ module WithinHelpers
 end
 World(WithinHelpers)
 
+Given /the following articles exists/ do |articles_table|
+  articles_table.hashes.each do |rowarticle|
+    article = Article.get_or_build_article(nil)
+    article.title = rowarticle[:title]
+    article.body = rowarticle[:body]
+    article.save!
+  end
+end
+
 Given /^the blog is set up$/ do
   Blog.default.update_attributes!({:blog_name => 'Teh Blag',
                                    :base_url => 'http://localhost:3000'});
@@ -83,6 +92,11 @@ end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|
   fill_in(field, :with => value)
+end
+
+When /^I fill in "(.*?)" with the id of the article "(.*?)"$/ do |field, title|
+  article = Article.find_by_title(title)
+  fill_in(field, :with => article.id)
 end
 
 When /^(?:|I )fill in "([^"]*)" for "([^"]*)"$/ do |value, field|

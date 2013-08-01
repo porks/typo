@@ -46,6 +46,85 @@ class ArticlesController < ContentController
     end
   end
 
+  def merge_article
+
+
+#    at = Article.get_or_build_article(nil)
+#    at.title = 'titteste'
+#    at.body = 'bodyteste'
+#    at.save!
+#    return
+
+    # Find the first article
+    article1 = Article.find(params[:id])
+    if (article1 == nil)
+      error("Could not merge the articles")
+    end
+
+    # Merge the objects
+    art_merged = article1.merge(params[:merge_with])
+    if (art_merged == nil)
+      error("Could not merge the articles...")
+    end
+
+    # Save the merged article
+    art_merged.save!
+
+    # Delete the second article
+    Article.delete(params[:merge_with])
+
+    # Show the merged article
+    redirect_to art_merged.permalink_url
+
+#     article1 = Article.find(params[:id])
+#    article2 = Article.find(params[:merge_with])
+
+#    articlefinal = Article.get_or_build_article(nil)
+#    articlefinal.title = article1.title
+#    articlefinal.author = article1.author
+#    articlefinal.user = article1.user
+#    articlefinal.body = article1.body + article2.body
+
+#    article1.comments.each do |comment|
+#      print "|1|#{comment}\n"
+#      comment.article = articlefinal
+#      articlefinal.comments.push(comment)
+#      comment.save!
+#    end
+
+#    article1.comments.clear
+
+#    article2.comments.each do |comment|
+#      print "|2|#{comment}\n"
+#      comment.article = articlefinal
+#      articlefinal.comments.push(comment)
+#      comment.save!
+#    end
+
+#    article2.comments.clear
+
+#    article1.destroy
+#    article2.destroy
+
+#   articlefinal.comments.each do |comment|
+#      print "|2|#{comment}\n"
+#      comment.article = articlefinal
+#      articlefinal.comments.push(comment)
+#      comment.save!
+#    end
+
+#    articlefinal.save!
+
+#    Article.delete(article1.id)
+#    Article.delete(article2.id)
+
+#print "aaaa|#{articlefinal.permalink_url}|bbbb\n"
+#    redirect_to "/admin/content/edit/#{articlefinal.perm_link}"
+#    articlefinal = Article.find(articlefinal.id)
+#    redirect_to articlefinal.permalink_url
+
+  end
+
   def search
     @canonical_url = url_for(:only_path => false, :controller => 'articles', :action => 'search', :page => params[:page], :q => params[:q])
     @articles = this_blog.articles_matching(params[:q], :page => params[:page], :per_page => @limit)

@@ -76,6 +76,22 @@ class Article < Content
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
   end
 
+  def merge(art_id)
+    if (self.id == art_id)
+      return nil
+    end
+
+    art = Article.find(art_id)
+    if (art == nil)
+      return nil
+    end
+
+    self.comments += art.comments
+    self.body += art.body
+
+    return self
+  end
+
   def has_child?
     Article.exists?({:parent_id => self.id})
   end
